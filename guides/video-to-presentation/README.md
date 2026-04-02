@@ -81,12 +81,12 @@ The YAML config is the control surface for the entire deck. It defines the video
 
 ```yaml
 video: /path/to/recording.mp4
-theme: purple                # Slidev theme (purple or newspaper)
+theme: purple                # Slidev theme name (you'll need your own)
 title: "My Presentation"
 subtitle: "Subtitle here"
 clip_target_duration: 30     # Target seconds for sped-up clips
 crf: 23                      # Video quality (lower = better, 18-28)
-auto_clips: false            # Auto-generate clips between every still pair
+auto_clips: false            # Default is true; set false for manual clip control
 
 # Narrative slides BEFORE the demo
 pre_slides:
@@ -173,6 +173,8 @@ python3 convert.py my-deck/config.yaml -o my-deck           # Extract + generate
 node slidev/cli.js my-deck/slides.md -o my-deck/slides.html  # Render HTML
 ```
 
+> **Tip: Use a Makefile.** Multi-step AI workflows benefit from a Makefile that wraps the individual commands. It gives you named targets (`make build`, `make slides`, `make serve`), lets you skip expensive steps during iteration, and documents the pipeline in a way that both humans and AI agents can read. Even simple projects get easier to manage when the commands are captured in one place rather than scattered across your shell history.
+
 The output directory structure:
 
 ```
@@ -203,7 +205,7 @@ make html OUT=my-deck
 make serve OUT=my-deck  # http://localhost:8848
 ```
 
-The key insight: `--skip-extract` (used by `make slides`) skips the ffmpeg step entirely. You can edit the YAML config -- changing titles, bullets, speaker notes, adding/removing narrative slides -- and rebuild in seconds.
+The key insight: `--skip-extract` is a flag on `convert.py` (and is what `make slides` uses under the hood) that skips the ffmpeg step entirely. You can edit the YAML config -- changing titles, bullets, speaker notes, adding/removing narrative slides -- and rebuild in seconds.
 
 ## Tools Used
 

@@ -181,7 +181,7 @@ Describe the lighting setup and surface:
 - **Say what you want**, not what you don't want (avoid negatives)
 - Be specific about the **medium**: photo, illustration, 3D render, watercolor, etc.
 - Include **lighting and perspective** details when they matter
-- Default to `.jpg` extension when saving -- Gemini returns JPEG format by default
+- Gemini returns JPEG by default. Use `.jpg` when saving with `image.save()`, or explicitly convert: `image.save("output.png", format="PNG")`
 
 ## Tools Used
 
