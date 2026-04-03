@@ -974,6 +974,20 @@ When evaluating a deck, lead with overall assessment before detailing specifics.
 
 ---
 
+## Build Presentation
+
+> Build a high-impact presentation from scratch using a phased approach -- pre-work, core principles, slide construction, deck-type rules, and validation.
+
+**Models:** Tested on Claude Opus 4 and GPT-5. Both produce strong results.
+
+**Usage:** Paste this prompt along with your context (audience, objective, existing content).
+
+**Complements:** [Deck Review](#deck-review) -- use that to critique a finished deck, use this one to build from scratch.
+
+**Full prompt:** [build_presentation.md](build_presentation.md)
+
+---
+
 ## Deep Research: Company Analysis
 
 > Generate a comprehensive 13-point analysis of any public company for investment research.
