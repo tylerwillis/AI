@@ -1,0 +1,258 @@
+name: content_publisher
+summary: "Discover shareable AI content from local projects, sessions, and workflows, then publish to a GitHub repo via PRs"
+
+step_arguments:
+  - name: source_dirs
+    description: "Directories to scan for shareable content (e.g., ~/experiments/video-to-slidev, ~/experiments/cli-gart). Comma-separated paths."
+    type: string
+
+  - name: session_dirs
+    description: "Claude Code session directories to scan for interesting workflows and techniques (e.g., ~/.claude/projects/-Users-tylerwillis-experiments). Comma-separated paths. Optional."
+    type: string
+
+  - name: candidates.md
+    description: "Markdown file listing discovered content candidates with category, source, relationships, and brief description"
+    type: file_path
+    review:
+      strategy: individual
+      instructions: |
+        Evaluate the candidates list against these criteria:
+        - Categorized Correctly: Each candidate is assigned to one of: prompts/, guides/, skills/, deepwork-jobs/, experiments/
+        - Source Identified: Each candidate has a clear source path or session reference
+        - Not Duplicate: No candidate duplicates content already in the repo at ~/experiments/AI/
+        - Description Quality: Each candidate has a 1-2 sentence description explaining what it is and why it's shareable
+        - Connections Noted: Related candidates are cross-referenced where applicable
+
+  - name: profile_report.md
+    description: "Dated report: 'How Tyler Uses Claude Code' synthesizing all scan data into a structured overview"
+    type: file_path
+    review:
+      strategy: individual
+      instructions: |
+        Evaluate the profile report:
+        - Dated: Report has today's date in the title
+        - Concrete: Every section has specific project names, tool names, and workflow descriptions (no generic filler)
+        - Active Projects: All listed projects are real (from scan data), not invented
+        - Patterns Backed by Evidence: Recurring patterns appear in 2+ projects
+        - Content Landscape: Accurately summarizes the candidates.md data
+
+  - name: approved_items.md
+    description: "User-approved subset of candidates to proceed with drafting"
+    type: file_path
+    review:
+      strategy: individual
+      instructions: |
+        Evaluate the approved items list:
+        - Batch Size: No more than 8 items approved (if more, should recommend splitting)
+        - Categorized: Each item assigned to exactly one category
+        - Tone Established: File includes a "Tone & Style Guide" section with voice, audience, and polish decisions
+        - User Notes: Any user guidance from triage is captured per item
+
+  - name: research_briefs/
+    description: "Directory containing research briefs for each approved item with real examples and specific details"
+    type: file_path
+    review:
+      strategy: individual
+      instructions: |
+        Evaluate the research briefs:
+        - Source Files Cited: Each brief references specific files that were read (not just directory names)
+        - Real Examples: Each brief contains at least one concrete example with specific details (numbers, outcomes)
+        - Depth Beyond Metadata: Briefs add information not present in the discover step's metadata scan
+        - Anonymized: Sensitive details replaced but patterns and insights preserved
+
+  - name: drafts/
+    description: "Directory containing all drafted content files, organized by category"
+    type: file_path
+
+  - name: review_checklist.md
+    description: "Checklist for the human review step with each draft item, its status, and any concerns flagged"
+    type: file_path
+
+  - name: published_prs.md
+    description: "Log of created PRs with URLs and descriptions"
+    type: file_path
+    review:
+      strategy: individual
+      instructions: |
+        Evaluate the published PRs log:
+        - PR URLs Present: Each approved item has a corresponding PR URL
+        - All Accounted For: Every item from review_checklist.md with status "approved" or "changes-made" has a PR entry
+        - Deferred Items Noted: Any items deferred to future runs are listed with reasons
+
+workflows:
+  publish:
+    summary: "End-to-end content discovery, profiling, drafting, review, and publishing pipeline"
+    common_job_info_provided_to_all_steps_at_runtime: |
+      This workflow discovers shareable content from your local projects, Claude Code
+      sessions, and DeepWork jobs -- then publishes it to a GitHub repo via PRs.
+
+      ## CONFIGURE THESE FOR YOUR SETUP
+
+      ### Target Repository
+      Location: [YOUR_REPO_PATH] (e.g., ~/projects/my-ai-toolkit)
+      Remote: [YOUR_GITHUB_REMOTE] (e.g., github.com/username/repo)
+      Branch protection: main requires PRs (no direct push)
+
+      ### Content Categories
+      Define the categories your repo uses. Each piece of content goes in exactly one.
+      The default categories are:
+
+      - **prompts/** — Standalone copy-paste prompts for LLM tasks
+      - **guides/** — Step-by-step workflow writeups with context and explanation
+      - **skills/** — Claude Code skills (SKILL.md files) or descriptions
+      - **deepwork-jobs/** — Portable DeepWork job definitions
+      - **experiments/** — Small, self-contained project snapshots
+
+      Adjust these to match your repo structure.
+
+      ### Source Material Locations
+      Where to scan for content. Adjust paths for your setup:
+
+      1. **Project directories** — Look for: README.md, project-plan.md, CLAUDE.md,
+         AGENTS.md, .deepwork/jobs/, interesting scripts
+      2. **Claude Code session JSONL** — At ~/.claude/projects/
+      3. **Claude Code plugins/skills** — At ~/.claude/plugins/
+      4. **DeepWork jobs** — .deepwork/jobs/ across subdirectories
+      5. **Settings** — ~/.claude/settings.json
+      6. **CLAUDE.md and AGENTS.md files** across projects
+      7. **Memory files** — ~/.claude/projects/*/memory/
+      8. **Git history** — `git log --oneline` reveals tool evolution
+
+      ## Content Quality Bar
+
+      Only publish content that is:
+      - Genuinely useful or interesting to other practitioners
+      - Not trivially obvious
+      - Self-contained enough to understand without access to private code
+      - Free of sensitive information (API keys, company internals, personal data)
+
+      ## Working Directory
+
+      All intermediate files (drafts, candidates, checklists) go in a dedicated
+      working directory (e.g., `~/ai-drafts/`), NOT in your project root.
+      Create the directory if it doesn't exist.
+
+      ## Writing Style
+
+      Adjust these to match your voice:
+
+      - Practical, builder-oriented. "Here's what I built and how it works."
+      - Direct, no filler. Lead with what it does, then how.
+      - Include enough context for someone with zero background to follow along.
+      - For guides: explain the thinking, not just the commands.
+      - For skills/jobs: make them portable and runnable.
+      - Include REAL examples -- anonymized if needed, but specific.
+
+    steps:
+      - name: discover
+        instructions: |
+          Run scripts/collect_metadata.sh to gather directory metadata, then analyze
+          the output to identify shareable content candidates. See steps/discover.md
+          for full instructions. Do NOT use sub-agents for scanning — the bash script
+          handles data collection, and the main agent handles analysis.
+        inputs:
+          source_dirs:
+            required: false
+          session_dirs:
+            required: false
+        outputs:
+          candidates.md:
+            required: true
+
+      - name: profile
+        instructions: |
+          Synthesize all scan data into a dated "How Tyler Uses Claude Code" report.
+          The report is both a discovery artifact and a publishable candidate.
+          See steps/profile.md for full instructions.
+
+          **For incremental runs** (adding 3-5 items to an existing repo): Ask the user
+          if they want a fresh profile report or want to skip this step. If skipping,
+          output a stub file noting "Profile skipped -- incremental run" and proceed
+          to triage.
+        inputs:
+          candidates.md:
+            required: true
+        outputs:
+          profile_report.md:
+            required: true
+
+      - name: triage
+        instructions: |
+          Present candidates and the profile report to the user for selection.
+          Write approved_items.md with only the items they chose.
+          See steps/triage.md for full instructions.
+        inputs:
+          candidates.md:
+            required: true
+          profile_report.md:
+            required: true
+        outputs:
+          approved_items.md:
+            required: true
+
+      - name: research
+        instructions: |
+          For each approved item, do deep research into the source material. Read actual
+          source code, configs, session history, git logs, and related files. Collect
+          real examples, specific details, and anonymized stories. The output is a
+          research brief per item that the draft step will use.
+          See steps/research.md for full instructions.
+        inputs:
+          approved_items.md:
+            required: true
+        outputs:
+          research_briefs/:
+            required: true
+
+      - name: draft
+        instructions: |
+          Draft publication-ready content for each approved item using the research briefs.
+          Sanitize all content and organize in drafts/ by category.
+          See steps/draft.md for full instructions.
+        inputs:
+          approved_items.md:
+            required: true
+          research_briefs/:
+            required: true
+        outputs:
+          drafts/:
+            required: true
+        process_requirements:
+          "Sanitized Content": "All drafts MUST be free of hardcoded API keys, tokens, and passwords."
+          "Self-Contained": "Each draft MUST be understandable without access to the original source material."
+          "Portable Paths": "All drafts MUST use generic placeholder paths instead of machine-specific absolute paths."
+
+      - name: human_review
+        instructions: |
+          Present drafts to user for quality, sensitivity, and "should this be public"
+          review. Write review_checklist.md with each item's status.
+          See steps/human_review.md for full instructions.
+        inputs:
+          drafts/:
+            required: true
+        outputs:
+          review_checklist.md:
+            required: true
+
+      - name: publish
+        instructions: |
+          For each approved item, create a branch, copy content into the repo,
+          update README indexes, and open a PR.
+          See steps/publish.md for full instructions.
+        inputs:
+          review_checklist.md:
+            required: true
+          drafts/:
+            required: true
+        outputs:
+          published_prs.md:
+            required: true
+
+    post_workflow_instructions: |
+      Workflow complete! Summary of what was published:
+
+      1. Read published_prs.md and list the PRs created
+      2. Remind the user to review and merge each PR on GitHub
+      3. Suggest running the workflow again in the future to discover new content
+         from ongoing work
+
