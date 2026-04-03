@@ -58,7 +58,7 @@ If there are more than 8 approved items, recommend splitting into batches. Resea
 ### research_briefs/
 
 ```
-[WORKING_DIR]/research_briefs/
+~/experiments/ai-drafts/research_briefs/
   [item-name].md    # One brief per approved item
 ```
 

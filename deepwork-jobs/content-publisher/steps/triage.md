@@ -13,7 +13,7 @@ Present the discovered candidates to the user for review and selection. The user
    The profile report gives a narrative overview of the user's Claude Code usage.
    The candidates list has the specific items to choose from.
 
-   Also read 2-3 existing published items from [TARGET_REPO]/ (one guide, one
+   Also read 2-3 existing published items from ~/experiments/AI/ (one guide, one
    experiment, one prompt) to calibrate quality expectations. New content should
    match or exceed the quality and depth of what's already published. Note the
    format patterns, level of detail, and voice used in existing content.
@@ -56,9 +56,9 @@ Present the discovered candidates to the user for review and selection. The user
 
 5. **Write approved_items.md**
 
-   Write to `[WORKING_DIR]/approved_items.md` (create the directory if it
-   doesn't exist). All intermediate files for this workflow go in `[WORKING_DIR]/`,
-   NOT in `[BASE_DIR]/` root.
+   Write to `~/experiments/ai-drafts/approved_items.md` (create the directory if it
+   doesn't exist). All intermediate files for this workflow go in `~/experiments/ai-drafts/`,
+   NOT in `~/experiments/` root.
 
    Create the approved list containing only the selected items, plus any notes the user
    provided during triage (e.g., "focus on the API patterns, skip the deployment section").
@@ -103,7 +103,7 @@ Selected [N] of [M] candidates for drafting.
 - The approved list preserves all metadata from candidates.md (source path, category, effort, dependencies)
 - A Tone & Style Guide section is included at the top of approved_items.md
 - Batch size is 8 or fewer items (if user approved more, they were warned about the quality tradeoff)
-- approved_items.md is written to [WORKING_DIR]/, not [BASE_DIR]/ root
+- approved_items.md is written to ~/experiments/ai-drafts/, not ~/experiments/ root
 
 ## Context
 

@@ -1,5 +1,5 @@
 name: content_publisher
-summary: "Discover shareable AI content from local projects, sessions, and workflows, then publish to a GitHub repo via PRs"
+summary: "Discover shareable AI content from local experiments, sessions, and workflows, then publish to github.com/tylerwillis/AI via PRs"
 
 step_arguments:
   - name: source_dirs
@@ -83,65 +83,96 @@ workflows:
   publish:
     summary: "End-to-end content discovery, profiling, drafting, review, and publishing pipeline"
     common_job_info_provided_to_all_steps_at_runtime: |
-      This workflow discovers shareable content from your local projects, Claude Code
-      sessions, and DeepWork jobs -- then publishes it to a GitHub repo via PRs.
+      This workflow discovers shareable AI content from Tyler Willis's local experiments,
+      Claude Code session history, DeepWork jobs, and skills -- then publishes it to the
+      public GitHub repo at github.com/tylerwillis/AI.
 
-      ## CONFIGURE THESE FOR YOUR SETUP
+      ## Target Repository
 
-      ### Target Repository
-      Location: [YOUR_REPO_PATH] (e.g., ~/projects/my-ai-toolkit)
-      Remote: [YOUR_GITHUB_REMOTE] (e.g., github.com/username/repo)
+      Location: ~/experiments/AI (git remote: github.com/tylerwillis/AI)
       Branch protection: main requires PRs (no direct push)
 
-      ### Content Categories
-      Define the categories your repo uses. Each piece of content goes in exactly one.
-      The default categories are:
+      ## Repo Directory Structure
 
-      - **prompts/** — Standalone copy-paste prompts for LLM tasks
-      - **guides/** — Step-by-step workflow writeups with context and explanation
-      - **skills/** — Claude Code skills (SKILL.md files) or descriptions
-      - **deepwork-jobs/** — Portable DeepWork job definitions
-      - **experiments/** — Small, self-contained project snapshots
+      The repo has 5 content categories. Each piece of content goes in exactly one:
 
-      Adjust these to match your repo structure.
+      - **prompts/** — Standalone copy-paste prompts for LLM tasks. These are self-contained
+        text blocks someone can paste into any LLM. Examples: deck review prompt, company
+        analysis prompt.
 
-      ### Source Material Locations
-      Where to scan for content. Adjust paths for your setup:
+      - **guides/** — Step-by-step workflow writeups with context and explanation. Each guide
+        gets its own subdirectory with a README.md. Guides explain multi-tool pipelines and
+        the thinking behind them. Examples: video-to-presentation pipeline, agentic image
+        generation.
 
-      1. **Project directories** — Look for: README.md, project-plan.md, CLAUDE.md,
-         AGENTS.md, .deepwork/jobs/, interesting scripts
-      2. **Claude Code session JSONL** — At ~/.claude/projects/
-      3. **Claude Code plugins/skills** — At ~/.claude/plugins/
-      4. **DeepWork jobs** — .deepwork/jobs/ across subdirectories
-      5. **Settings** — ~/.claude/settings.json
-      6. **CLAUDE.md and AGENTS.md files** across projects
-      7. **Memory files** — ~/.claude/projects/*/memory/
-      8. **Git history** — `git log --oneline` reveals tool evolution
+      - **skills/** — Claude Code skills (SKILL.md files) or descriptions of skills used
+        and how they work. For third-party skills, describe what it does and link to the
+        source rather than cloning it. For custom skills, include the full content.
+
+      - **deepwork-jobs/** — Portable DeepWork job definitions (job.yml + step instructions).
+        These should be self-contained and runnable when dropped into any project's
+        .deepwork/jobs/ directory.
+
+      - **experiments/** — Small, self-contained project snapshots. Not polished code --
+        reference and inspiration. Include a README explaining what it does and what was
+        learned.
+
+      ## Source Material Locations
+
+      Content is discovered from these local sources:
+
+      1. **~/experiments/ subdirectories** — Project directories containing tools, scripts,
+         DeepWork jobs, and documentation. Look for: README.md, project-plan.md,
+         CLAUDE.md, AGENTS.md, .deepwork/jobs/, interesting scripts, Makefiles.
+
+      2. **~/.claude/projects/ session JSONL** — Claude Code session transcripts. Look for:
+         interesting multi-step workflows, creative uses of tools, effective prompting
+         patterns, novel problem-solving approaches worth documenting.
+
+      3. **~/.claude/plugins/ skills** — Installed Claude Code skills. For third-party
+         skills, describe usage and link to source. For custom skills, include content.
+
+      4. **.deepwork/jobs/ across subdirectories** — DeepWork job definitions scattered
+         across various ~/experiments/ subdirectories.
+
+      5. **~/.claude/settings.json and project settings** — Custom hooks, MCP server configs,
+         permission rules that reveal how Claude Code is configured.
+
+      6. **CLAUDE.md and AGENTS.md files across projects** — Project-specific instructions
+         that represent accumulated wisdom about how to work with AI on specific codebases.
+
+      7. **~/.claude/projects/*/memory/** — Memory files containing distilled insights.
+
+      8. **Git history on interesting projects** — `git log --oneline` reveals tool evolution.
 
       ## Content Quality Bar
 
       Only publish content that is:
-      - Genuinely useful or interesting to other practitioners
-      - Not trivially obvious
+      - Genuinely useful or interesting to other AI practitioners
+      - Not trivially obvious (skip "how to write a prompt" basics)
       - Self-contained enough to understand without access to private code
-      - Free of sensitive information (API keys, company internals, personal data)
+      - Free of sensitive information (API keys, company internals, personal data, trade secrets)
 
       ## Working Directory
 
-      All intermediate files (drafts, candidates, checklists) go in a dedicated
-      working directory (e.g., `~/ai-drafts/`), NOT in your project root.
-      Create the directory if it doesn't exist.
+      All intermediate files (drafts, candidates, checklists) go in `~/experiments/ai-drafts/`,
+      NOT in `~/experiments/` root. Create the directory if it doesn't exist.
 
       ## Writing Style
 
-      Adjust these to match your voice:
+      Voice: Builder's notebook. First person, casual. "Here's what I built and why."
+      Audience: Assumes Claude Code familiarity. Skip basics.
+      Identity: "An AI practitioner's toolkit" -- personal but framed as useful to others.
 
       - Practical, builder-oriented. "Here's what I built and how it works."
       - Direct, no filler. Lead with what it does, then how.
       - Include enough context for someone with zero background to follow along.
       - For guides: explain the thinking, not just the commands.
       - For skills/jobs: make them portable and runnable.
-      - Include REAL examples -- anonymized if needed, but specific.
+      - For experiments: cleaned up but casual. Remove cruft, keep the experimental feel.
+      - Include REAL examples -- anonymized if needed, but specific. Generic descriptions
+        ("this tool does X") are weak. Specific stories ("I used this to reduce 2000
+        hallucinations to 45") are strong.
 
     steps:
       - name: discover
@@ -256,3 +287,5 @@ workflows:
       3. Suggest running the workflow again in the future to discover new content
          from ongoing work
 
+# version: "1.0.2"
+# changelog moved to AGENTS.md to avoid job.yml schema validation errors

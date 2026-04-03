@@ -14,7 +14,7 @@ Synthesize all scan data from the discover step into a dated report titled "How 
 
 2. **Read the raw scan context**
 
-   To write a rich report, also read `[WORKING_DIR]/metadata.md` (the output
+   To write a rich report, also read `~/experiments/ai-drafts/metadata.md` (the output
    of the discover step's bash script). It contains:
    - The settings/environment data (what plugins, hooks, MCP servers are configured)
    - Excerpts from CLAUDE.md and AGENTS.md files across projects

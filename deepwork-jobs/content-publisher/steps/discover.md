@@ -4,7 +4,7 @@
 
 Scan all source material to identify content worth sharing publicly. Collect metadata
 efficiently via bash script, analyze with AI judgment, and produce a filtered candidates
-list at `[WORKING_DIR]/candidates.md`.
+list at `~/experiments/ai-drafts/candidates.md`.
 
 ## Important: Context Budget
 
@@ -20,20 +20,20 @@ with "Prompt is too long." The discover step is designed to avoid this:
 
 ### Setup: Create Working Directory
 
-All intermediate files for this workflow go in `[WORKING_DIR]/`. Create it
+All intermediate files for this workflow go in `~/experiments/ai-drafts/`. Create it
 if it doesn't exist:
 
 ```bash
-mkdir -p [WORKING_DIR]/research_briefs
+mkdir -p ~/experiments/ai-drafts/research_briefs
 ```
 
 ### Phase 0: Check Current Repo State and Last Run Date
 
-Read the current state of [TARGET_REPO]/ to understand what's already published.
+Read the current state of ~/experiments/AI/ to understand what's already published.
 List every item in each category directory (prompts/, guides/, skills/, deepwork-jobs/,
 experiments/). This is used in Phase 4 to filter out duplicates.
 
-**Freshness check:** Look for `[WORKING_DIR]/candidates.md` from a previous run.
+**Freshness check:** Look for `~/experiments/ai-drafts/candidates.md` from a previous run.
 If it exists, read the `Discovered:` date header. Pass this date as `--since` to the
 metadata script in Phase 1 to skip unchanged directories. If no previous run exists,
 do a full scan.
@@ -43,19 +43,19 @@ do a full scan.
 Run the collection script to gather structured metadata from all source directories:
 
 ```bash
-bash .deepwork/jobs/content_publisher/scripts/collect_metadata.sh \
-  --output [WORKING_DIR]/metadata.md \
-  [BASE_DIR]
+bash ~/experiments/.deepwork/jobs/content_publisher/scripts/collect_metadata.sh \
+  --output ~/experiments/ai-drafts/metadata.md \
+  ~/experiments
 ```
 
 **Freshness filtering** (for subsequent runs): If a previous run's candidates.md
 exists, check its date header and pass `--since` to skip unchanged directories:
 
 ```bash
-bash .deepwork/jobs/content_publisher/scripts/collect_metadata.sh \
+bash ~/experiments/.deepwork/jobs/content_publisher/scripts/collect_metadata.sh \
   --since 2026-03-15 \
-  --output [WORKING_DIR]/metadata.md \
-  [BASE_DIR]
+  --output ~/experiments/ai-drafts/metadata.md \
+  ~/experiments
 ```
 
 The script automatically:
@@ -72,7 +72,7 @@ what's available. Use the Glob tool to find ALL DeepWork jobs across all subdire
 
 ```
 Glob pattern: **/.deepwork/jobs/*/job.yml
-Path: [BASE_DIR]
+Path: ~/experiments
 ```
 
 For each job found, read its `job.yml` summary and workflow names. DeepWork jobs are
@@ -81,12 +81,12 @@ reuse. Don't just list them; note which ones look portable (vs. which depend on
 project-specific infrastructure).
 
 Key locations with many jobs (check these carefully):
-- `[SOURCE_DIR]/.deepwork/jobs/` (browser_anthropologist, manim_video_producer, super_deep_research, etc.)
-- `[SOURCE_DIR]/internal-agentspace/.deepwork/jobs/` (30+ jobs)
+- `~/experiments/chats/.deepwork/jobs/` (browser_anthropologist, manim_video_producer, super_deep_research, etc.)
+- `~/experiments/internal-agentspace/.deepwork/jobs/` (30+ jobs)
 
 ### Phase 1.75: Session History Scan
 
-Claude Code session transcripts at `~/.claude/projects/[YOUR_PROJECT_PATHS]/` 
+Claude Code session transcripts at `~/.claude/projects/-Users-tylerwillis-experiments-*/` 
 contain JSONL files with full conversation history. These are a rich source of
 content candidates -- they reveal:
 - Multi-step workflows worth documenting as guides
@@ -96,7 +96,7 @@ content candidates -- they reveal:
 
 ```bash
 # Find recent sessions (last 30 days)
-find ~/.claude/projects/[YOUR_PROJECT_PATHS] -name "*.jsonl" -mtime -30
+find ~/.claude/projects/-Users-tylerwillis-experiments-* -name "*.jsonl" -mtime -30
 ```
 
 Read sessions thoroughly. Look for interesting interactions, not just summaries.
@@ -106,7 +106,7 @@ produced unexpectedly good results.
 
 ### Phase 2: Analyze Metadata and Identify Candidates
 
-Read `[WORKING_DIR]/metadata.md` and evaluate each directory from the
+Read `~/experiments/ai-drafts/metadata.md` and evaluate each directory from the
 perspective of "what would be useful to someone else?"
 
 For each directory, decide:
@@ -134,9 +134,9 @@ After identifying individual candidates, review the full list for:
 1. **Collect** all candidate fragments into a single list
 2. **Deduplicate** -- same source or substantially same content
 3. **Add connections** -- annotate related candidates
-4. **Filter net-new** -- remove anything already in [TARGET_REPO]/ (from Phase 0)
+4. **Filter net-new** -- remove anything already in ~/experiments/AI/ (from Phase 0)
 5. **Add the profile report itself as a candidate** -- the "How Tyler Uses Claude Code" report (created in the next step) is itself a publishable guide
-6. **Write `[WORKING_DIR]/candidates.md`**
+6. **Write `~/experiments/ai-drafts/candidates.md`**
 
 ## Output Format
 

@@ -13,7 +13,7 @@ For each item with status "approved" or "changes-made" in review_checklist.md:
 1. **Create a feature branch**
 
    ```bash
-   cd [TARGET_REPO]
+   cd ~/experiments/AI
    git checkout main && git pull origin main
    git checkout -b content/[category]/[item-name]
    ```
@@ -22,7 +22,7 @@ For each item with status "approved" or "changes-made" in review_checklist.md:
 
 2. **Copy draft content into the repo**
 
-   Copy from `[WORKING_DIR]/drafts/[category]/[item-name]/` to `[category]/[item-name]/` in the repo root.
+   Copy from `~/experiments/ai-drafts/drafts/[category]/[item-name]/` to `[category]/[item-name]/` in the repo root.
 
    For single-file items (prompts, skills), copy the file directly into the category directory.
 
@@ -79,12 +79,12 @@ For each item with status "approved" or "changes-made" in review_checklist.md:
 Ask the user if they want to clean up the working directory:
 
 ```bash
-rm -rf [WORKING_DIR]/
+rm -rf ~/experiments/ai-drafts/
 ```
 
 **Note:** Only clean up after all PRs have been created and the user has confirmed.
 If any PRs need revision after publishing, the drafts and research briefs will be
-needed. Suggest keeping `[WORKING_DIR]/` until all PRs are merged.
+needed. Suggest keeping `~/experiments/ai-drafts/` until all PRs are merged.
 
 ## Output Format
 
@@ -95,8 +95,8 @@ needed. Suggest keeping `[WORKING_DIR]/` until all PRs are merged.
 
 | Item | Category | PR URL | Status |
 |------|----------|--------|--------|
-| [name] | guides | https://github.com/[USER]/[REPO]/pull/N | open |
-| [name] | skills | https://github.com/[USER]/[REPO]/pull/M | open |
+| [name] | guides | https://github.com/tylerwillis/AI/pull/N | open |
+| [name] | skills | https://github.com/tylerwillis/AI/pull/M | open |
 ```
 
 ## Quality Criteria

@@ -8,13 +8,13 @@ For each approved item, create publication-ready content in the appropriate form
 
 ### Process
 
-All draft files go in `[WORKING_DIR]/drafts/`, NOT `[BASE_DIR]/`.
+All draft files go in `~/experiments/ai-drafts/drafts/`, NOT `~/experiments/`.
 
 For each item in approved_items.md:
 
 1. **Read the research brief first**
 
-   The research step produced a brief for each item at `[WORKING_DIR]/research_briefs/[item-name].md`.
+   The research step produced a brief for each item at `~/experiments/ai-drafts/research_briefs/[item-name].md`.
    Read this before writing -- it contains real examples, specific details, and source excerpts
    that the draft should incorporate. If no research brief exists (e.g., the research step was
    skipped), read the source material thoroughly as a fallback.
@@ -40,7 +40,7 @@ For each item in approved_items.md:
    - Ensure the job is self-contained and runnable when dropped into any project
 
    **Making DeepWork jobs portable:**
-   - Replace all absolute paths (`[SOURCE_DIR]/...`) with relative paths or placeholders
+   - Replace all absolute paths (`~/experiments/chats/...`) with relative paths or placeholders
    - Replace references to specific MCP servers with generic prerequisites ("requires browser automation")
    - Replace project-specific step_arguments with documented inputs the user provides
    - If a step references external tools (ElevenLabs, Gemini, etc.), list them as prerequisites in README.md
